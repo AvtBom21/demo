@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sidebar menu With Sub-menus | Using HTML, CSS & JQuery</title>
-    <link rel="stylesheet" href="../static/Css/Home.css">
+    <link rel="stylesheet" href="Css/Home.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
@@ -111,63 +111,22 @@
 
                     <div class="products-container">
 
-                        <div class="product" data-name="p-1">
+                        <div class="product" th:each="product : ${products}" th:data-name="${'p-' + product.id}">
                             <div>
-                                <img class="img-item" src="../static/Style/ip15pm.png" alt="">
+                                <img class="img-item" th:src="@{'/Style/' + ${product.image}}" alt="" />
                             </div>
-                            <h3>Iphone 15 pro max</h3>
-                            <div class="price">$1499.00</div>
-                        </div>
-
-                        <div class="product" data-name="p-2">
-                            <div>
-                                <img class="img-item" src="../static/Style/ip14pm.png" alt="">
-                            </div>
-                            <h3>Iphone 14 pro max</h3>
-                            <div class="price">$1299.00</div>
-                        </div>
-
-                        <div class="product" data-name="p-3">
-                            <div>
-                                <img class="img-item" src="../static/Style/ip14p.png" alt="">
-                            </div>
-                            <h3>Iphone 14 plus</h3>
-                            <div class="price">$899.00</div>
-                        </div>
-
-                        <div class="product" data-name="p-4">
-                            <div>
-                                <img class="img-item" src="../static/Style/ip13.png" alt="">
-                            </div>
-                            <h3>Iphoone 13</h3>
-                            <div class="price">$799.00</div>
-                        </div>
-
-                        <div class="product" data-name="p-5">
-                            <div>
-                                <img class="img-item" src="../static/Style/ip12.png" alt="">
-                            </div>
-                            <h3>Iphone 12</h3>
-                            <div class="price">$699.00</div>
-                        </div>
-
-                        <div class="product" data-name="p-6">
-                            <div>
-                                <img class="img-item" src="../static/Style/ip11.png" alt="">
-                            </div>
-                            <h3>Iphone 12</h3>
-                            <div class="price">$599.00</div>
+                            <h3 th:text="${product.name}"></h3>
+                            <div class="price" th:text="${'$' + product.price}"></div>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="products-preview">
-
-                    <div class="preview" data-target="p-1">
+                    <div class="preview" th:each="product : ${products}" th:data-target="${'p-' + product.id}">
                         <i class="fas fa-times"></i>
-                        <img class="img-item2" src="../static/Style/ip15pm.png" alt="">
-                        <h3>Iphone 15 pro max</h3>
+                        <img class="img-item2" th:src="@{'/Style/' + ${product.image}}" alt="" />
+                        <h3 th:text="${product.name}"></h3>
                         <div class="stars">
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
@@ -176,118 +135,14 @@
                             <i class="fas fa-star-half-alt"></i>
                             <span>( 250 )</span>
                         </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, dolorem.</p>
-                        <div class="price">$1499.00</div>
+                        <p th:text="${'Sản phẩm được bán tại ' + product.category}"></p>
+                        <div class="price" th:text="${'$' + product.price}"></div>
                         <div class="buttons">
-                            <a href="#" class="buy">buy now</a>
-                            <a href="#" class="cart">add to cart</a>
-                        </div>
-                    </div>
-
-                    <div class="preview" data-target="p-2">
-                        <i class="fas fa-times"></i>
-                        <img class="img-item2" src="../static/Style/ip14pm.png" alt="">
-                        <h3>Iphone 14 pro max</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span>( 250 )</span>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, dolorem.</p>
-                        <div class="price">$1299.00</div>
-                        <div class="buttons">
-                            <a href="#" class="buy">buy now</a>
-                            <a href="#" class="cart">add to cart</a>
-                        </div>
-                    </div>
-
-                    <div class="preview" data-target="p-3">
-                        <i class="fas fa-times"></i>
-                        <img class="img-item2" src="../static/Style/ip14p.png" alt="">
-                        <h3>Iphone 14 plus</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span>( 250 )</span>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, dolorem.</p>
-                        <div class="price">$899.00</div>
-                        <div class="buttons">
-                            <a href="#" class="buy">buy now</a>
-                            <a href="#" class="cart">add to cart</a>
-                        </div>
-                    </div>
-
-                    <div class="preview" data-target="p-4">
-                        <i class="fas fa-times"></i>
-                        <img class="img-item2" src="../static/Style/ip13.png" alt="">
-                        <h3>Iphone 13</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span>( 250 )</span>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, dolorem.</p>
-                        <div class="price">$799.00</div>
-                        <div class="buttons">
-                            <a href="#" class="buy">buy now</a>
-                            <a href="#" class="cart">add to cart</a>
-                        </div>
-                    </div>
-
-                    <div class="preview" data-target="p-5">
-                        <i class="fas fa-times"></i>
-                        <img class="img-item2" src="../static/Style/ip12.png" alt="">
-                        <h3>Iphone 12</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span>( 250 )</span>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, dolorem.</p>
-                        <div class="price">$699.00</div>
-                        <div class="buttons">
-                            <a href="#" class="buy">buy now</a>
-                            <a href="#" class="cart">add to cart</a>
-                        </div>
-                    </div>
-
-                    <div class="preview" data-target="p-6">
-                        <i class="fas fa-times"></i>
-                        <img class="img-item2" src="../static/Style/ip11.png" alt="">
-                        <h3>Iphone 11</h3>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            <span>( 250 )</span>
-                        </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur, dolorem.</p>
-                        <div class="price">$599.00</div>
-                        <div class="buttons">
-                            <a href="#" class="buy">buy now</a>
-                            <a href="#" class="cart">add to cart</a>
+                            <a href="buy" class="buy">buy now</a>
+                            <a href="addshop" class="cart">add to cart</a>
                         </div>
                     </div>
                 </div>
-
-
-
-
             </div>
 
         </div>
@@ -296,7 +151,7 @@
 
 
     <!--======= JavaScript =============  -->
-    <script src="../static/Style/main.js"></script>
+    <script src="Style/main.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
