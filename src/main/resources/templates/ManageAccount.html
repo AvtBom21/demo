@@ -407,6 +407,36 @@
             });
         }
 
+        document.getElementById('reSendEmailBtn').addEventListener('click', function () {
+            // Add logic to delete the selected employees
+            // For demonstration, let's just close the modal
+            var selectedIds = [];
+            // Lặp qua tất cả các checkbox được chọn
+            $("input[name='options[]']:checked").each(function () {
+                // Lấy giá trị của thuộc tính 'value' (ID) của checkbox và thêm vào mảng
+                selectedIds.push($(this).val());
+            });
+            $.ajax({
+                type: 'POST',
+                url: 'Admin/resendEmail',
+                contentType: 'application/json', // Set the content type to JSON
+                data: JSON.stringify({ selectedIds: selectedIds }),
+
+                success: function (response) {
+                    // Handle the success response if needed
+                    console.log(response);
+
+                    // Close the modal and refresh the table
+                    closeModal('deleteEmployeeModal');
+                    location.reload();
+                    renderEmployees();
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+
         // Initial rendering of employees
         renderEmployees();
     </script>

@@ -5,8 +5,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +26,50 @@ public class LoginController {
     ProductRepo productRepo;
     @Autowired
     DetailTranRepo detailTranRepo;
+    @Autowired
+    CustomerRepo customerRepo;
     private List<DetailTran> detailTrans = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
 
     @GetMapping("/Checkout")
-    public String Checkout(){
+    public String Checkout(Model model){
+        int count=0;
+        double Total=0;
+        for (DetailTran detail:detailTrans
+             ) {
+            count = count + detail.getQuantity();
+            Total = Total + detail.getTotalPrice();
+        }
+        model.addAttribute("count",count);
+        model.addAttribute("Total",Total);
+        return "Checkout";
+    }
+    @PostMapping("/Checkout")
+    public String Checkout_add(@RequestParam("firstname") String firstname,
+                               @RequestParam("phone") String phone,
+                               @RequestParam("address") String address,
+                               @RequestParam("cardname") String cardname,
+                               @RequestParam("cardnumber") String cardnumber,
+                               @RequestParam("expmonth") String expmonth,
+                               @RequestParam("expyear") String expyear,
+                               @RequestParam("cvv") String cvv,
+                               @RequestParam(name = "sameadr", defaultValue = "false") boolean sameAddress){
+
+        Customer customer = new Customer(firstname, address, phone);
+        for (DetailTran detail:detailTrans
+             ) {
+            detail.setPhone(phone);
+            detail.setStatus("Đang chuẩn bị hàng");
+            if(!cardname.isEmpty()){
+                detail.setTypePayment("Card");
+            } else if (sameAddress) {
+                detail.setTypePayment("Cash");
+            }else{
+                detail.setTypePayment("QR-Code");
+            }
+            detailTranRepo.save(detail);
+        }
+        customerRepo.save(customer);
         return "Checkout";
     }
     @GetMapping("/")
@@ -82,6 +119,10 @@ public class LoginController {
             return "redirect:/";
         }
         model.addAttribute("account",account);
+        List<DetailTran> detailTranList = new ArrayList<>();
+        detailTranRepo.findAll().forEach(detailTranList::add);
+        model.addAttribute("products", products);
+        model.addAttribute("detailTranList", detailTranList);
         return "Dashboard";
     }
 
@@ -168,5 +209,13 @@ public class LoginController {
         model.addAttribute("addsuccess","Thêm sản phẩm thành công");
         detailTranRepo.save(detailTran);
         return "redirect:/Home";
+    }
+    @GetMapping("historyorder")
+    public String showhistory(@RequestParam("id") int detailid, Model model){
+        DetailTran detailTran = detailTranRepo.findById(detailid).orElse(null);
+        Product product = productRepo.findById(detailTran.getProductID()).orElse(null);
+        model.addAttribute("detailTran", detailTran);
+        model.addAttribute("product", product);
+        return "Historyorder";
     }
 }

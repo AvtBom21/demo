@@ -50,14 +50,14 @@
                         </a>
                     </div>
 
-                    <div class="item">
+                    <div class="item" th:if="${account.admin == 1}">
                         <a class="sub-btn">
                             <i class="fas fa-box-open"></i>
                             Products
                             <i class="fas fa-angle-right dropdown"></i>
                         </a>
 
-                        <div class="sub-menu">
+                        <div class="sub-menu" >
                             <a href="ManageProducts.html" class="sub-item">
                                 <i class="far fa-clipboard"></i>
                                 Manage Production
@@ -65,7 +65,7 @@
                         </div>
                     </div>
 
-                    <div class="item">
+                    <div class="item" th:if="${account.admin == 1}">
                         <a class="sub-btn">
                             <i class="fas fa-user-lock"></i>
                             Account
@@ -112,7 +112,7 @@
         
         
         
-                <div class="action">
+                <div th:if="${account}" class="action">
                     <div class="profile">
                         <img class="topbar-img" th:src="'images/'+${account.image}" alt="Profile Image">
                     </div>
@@ -128,10 +128,12 @@
                         
                         <ul>
                             <li>
-                                <a href="Dashboard/logout">
-                                    Log Out
-                                    <i class='fas fa-sign-out-alt'></i>
-                                </a>
+
+                                        <a href="Dashboard/logout">
+                                            Log Out
+                                            <i class='fas fa-sign-out-alt'></i>
+                                        </a>
+
                             </li>
 
                         </ul>
@@ -150,39 +152,22 @@
     
                     <table>
                         <thead>
+                        <div th:each="detailTran : ${detailTrans}">
+                            <div th:each="product : ${products}" th:if="${product.id eq detailTran.ProductID}">
                             <tr>
-                                <td>Name</td>
-                                <td>Price</td>
-                                <td>Payment</td>
-                                <td>Status</td>
+                                <td th:text="${product.name}"></td>
+                                <td th:text="${detailTrans.TotalPrice}">Price</td>
+                                <td th:text="${detailTrans.typePayment}">Payment</td>
+                                <td th:text="${detailTrans.status}">Status</td>
                             </tr>
+                            </div>
+                        </div>
                         </thead>
-    
+
                         <tbody>
                             <tr>
                                 <td>iPhone 15 pro max</td>
                                 <td>$1499</td>
-                                <td>Paid</td>
-                                <td><span class="Compelete">Compelete</span></td>
-                            </tr>
-    
-                            <tr>
-                                <td>iPhone 14 pro max</td>
-                                <td>$1399</td>
-                                <td>Credit Card</td>
-                                <td><span class="Compelete">Compelete</span></td>
-                            </tr>
-    
-                            <tr>
-                                <td>Apple Watch series 9</td>
-                                <td>$700</td>
-                                <td>Paid</td>
-                                <td><span class="Compelete">Compelete</span></td>
-                            </tr>
-    
-                            <tr>
-                                <td>AirPod pro 2</td>
-                                <td>$300</td>
                                 <td>Paid</td>
                                 <td><span class="Compelete">Compelete</span></td>
                             </tr>

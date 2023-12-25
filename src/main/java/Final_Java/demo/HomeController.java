@@ -93,7 +93,24 @@ public class HomeController {
         }
         return "redirect:/Admin";
     }
+    @PostMapping("/Admin/resendEmail")
+    public String resendEmail(@RequestBody Map<String, List<String>> requestBody, Model model) {
+        List<String> selectedIds = requestBody.get("selectedIds");
 
+        if (selectedIds == null || selectedIds.isEmpty()) {
+            return "redirect:/Admin";
+        }
+
+        // Convert the List<String> to an array if needed
+        String[] idArray = selectedIds.toArray(new String[0]);
+
+        // Process the selected IDs (e.g., delete from the database)
+        for (String id : idArray) {
+            int employeeId = Integer.parseInt(id.trim());
+            db.deleteById(employeeId);
+        }
+        return "redirect:/Admin";
+    }
     @PostMapping("/Admin/edit")
     public String EditAdmin(@RequestParam("id") String id,
                             @RequestParam("name") String name,
@@ -230,6 +247,7 @@ public class HomeController {
         productRepo.save(existingProduct);
         return  "redirect:/Product";
     }
+
 
     private String generateRandomPassword() {
         // Define the characters that can be used in the password
