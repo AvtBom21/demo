@@ -151,6 +151,9 @@ public class LoginController {
         if(products.isEmpty()){
             productRepo.findAll().forEach(products::add);
         }
+        if(account!=null){
+            model.addAttribute("account", account);
+        }
         model.addAttribute("products", products);
         return "Home";
     }
