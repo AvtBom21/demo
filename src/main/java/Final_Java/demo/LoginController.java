@@ -1,21 +1,23 @@
 package Final_Java.demo;
 
-import Final_Java.demo.Data.Account;
-import Final_Java.demo.Data.AccountRepo;
-import Final_Java.demo.Data.Product;
-import Final_Java.demo.Data.ProductRepo;
+import Final_Java.demo.Data.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class LoginController {
@@ -24,6 +26,10 @@ public class LoginController {
     AccountRepo db;
     @Autowired
     ProductRepo productRepo;
+    @Autowired
+    DetailTranRepo detailTranRepo;
+    private List<DetailTran> detailTrans = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
 
     @GetMapping("/Checkout")
     public String Checkout(){
@@ -85,13 +91,25 @@ public class LoginController {
         return "Dashboard";
     }
     @GetMapping("/Cart")
-    public String Cart(){
+    public String Cart(Model model){
+        model.addAttribute("products",products);
+        model.addAttribute("detailTrans", detailTrans);
+        int count=0;
+        double Total=0;
+        for (DetailTran detail:detailTrans
+        ) {
+            count = count + detail.getQuantity();
+            Total = Total + detail.getTotalPrice();
+        }
+        model.addAttribute("count", count);
+        model.addAttribute("Total", Total);
         return "Cart";
     }
     @GetMapping("/Home")
     public String Home(Model model){
-        List<Product> products = new ArrayList<>();
-        productRepo.findAll().forEach(products::add);
+        if(products.isEmpty()){
+            productRepo.findAll().forEach(products::add);
+        }
         model.addAttribute("products", products);
         return "Home";
     }
@@ -101,13 +119,54 @@ public class LoginController {
         return Dashboard(model);
     }
     @GetMapping("/buy")
-    public String Buy(Model model){
-        account =null;
-        return Dashboard(model);
+    public String Buy(@RequestParam("id") int productId, Model model){
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        DetailTran detailTran = new DetailTran("",productId,1,1,
+                1,1,"đang mua","", currentDate.format(formatter));
+        Product product1 = productRepo.findById(productId).orElse(null);
+        detailTran.setUnitPrice(product1.getPrice());
+        detailTran.setTotalPrice((double) detailTran.getQuantity()*detailTran.getUnitPrice());
+        detailTrans.add(detailTran);
+        model.addAttribute("products",products);
+        model.addAttribute("detailTrans", detailTrans);
+        int count=0;
+        double Total=0;
+        for (DetailTran detail:detailTrans
+             ) {
+            count = count + detail.getQuantity();
+            Total = Total + (double)detail.getQuantity()*detail.getUnitPrice();
+        }
+        model.addAttribute("count", count);
+        model.addAttribute("Total", Total);
+        detailTranRepo.save(detailTran);
+        return "Cart";
+    }
+    @PostMapping("/updateQuantity")
+    public String updateQuantity(@RequestParam("detailTranId") String detailTranId,
+                                                 @RequestParam("quantity") String newQuantity) {
+        // Retrieve the DetailTran entity by detailTranId
+        DetailTran detailTran = detailTranRepo.findById(Integer.parseInt(detailTranId)).orElse(null);
+        DetailTran detailTran1 = detailTrans.get(detailTrans.indexOf(detailTran));
+        detailTran1.setQuantity(Integer.parseInt(newQuantity));
+        detailTran.setQuantity(Integer.parseInt(newQuantity));
+        detailTran.setTotalPrice(Double.parseDouble(newQuantity)*detailTran.getUnitPrice());
+        detailTran1.setTotalPrice(Double.parseDouble(newQuantity)*detailTran.getUnitPrice());
+        detailTranRepo.save(detailTran);
+        return "redirect:/Cart";
     }
     @GetMapping("/addshop")
-    public String addshop(Model model){
-        account =null;
-        return Dashboard(model);
+    public String addshop(@RequestParam("id") int productId, Model model){
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        DetailTran detailTran = new DetailTran("",productId,1,1,
+                1,1,"đang mua","", currentDate.format(formatter));
+        Product product1 = productRepo.findById(productId).orElse(null);
+        detailTran.setUnitPrice(product1.getPrice());
+        detailTran.setTotalPrice((double) detailTran.getQuantity()*detailTran.getUnitPrice());
+        detailTrans.add(detailTran);
+        model.addAttribute("addsuccess","Thêm sản phẩm thành công");
+        detailTranRepo.save(detailTran);
+        return "redirect:/Home";
     }
 }

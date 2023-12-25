@@ -139,6 +139,7 @@
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th>Price</th>
+                                   <th>Description</th>
                                 <th>Category</th>
                                 <th>Creation date</th>
                                 <th>Actions</th>
@@ -154,9 +155,10 @@
 									    <label th:for="${e.id}"></label>
 								    </span>
                                 </td>
-                                <td><img th:src="@{'/images/'+${e.image}}" style="width: 80%; height: 100px;"/></td>
+                                <td><img th:src="@{'/products/'+${e.image}}" style="width: 80%; height: 100px;"/></td>
                                 <td th:text="${e.name}"></td>
                                 <td th:text="${e.price}"></td>
+                                <td th:text="${e.description}"></td>
                                 <td th:text="${e.category}"></td>
                                 <td th:utext="${#dates.format(e.creationDate, 'yyyy-MM-dd')}"></td>
 
@@ -187,6 +189,10 @@
                                 <div class="form-group">
                                     <label for="addPrice" style="color: black;">Price</label>
                                     <input type="text" name="addPrice" id="addPrice" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="addDescription" style="color: black;">Description</label>
+                                    <input type="text" name="addDescription" id="addDescription" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="addCategory" style="color: black;">Category</label>
@@ -221,15 +227,19 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="editName" style="color: black;">Name</label>
-                                    <input type="text" name="editName" id="editName" class="form-control" required>
+                                    <input type="text" name="editName" id="editName" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="editPrice" style="color: black;">Price</label>
-                                    <input type="text" name="editPrice" id="editPrice" class="form-control" required>
+                                    <input type="text" name="editPrice" id="editPrice" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="editDescription" style="color: black;">Description</label>
+                                    <input type="text" name="editDescription" id="editDescription" class="form-control" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="editCategory" style="color: black;">Category</label>
-                                    <input type="text" name="editCategory" id="editCategory" class="form-control" required>
+                                    <input type="text" name="editCategory" id="editCategory" class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label for="editImage" class="form-label" style="color: black;">Choose Image</label>

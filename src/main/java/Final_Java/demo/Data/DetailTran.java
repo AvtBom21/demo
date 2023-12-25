@@ -16,18 +16,26 @@ public class DetailTran {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int TransactionDetailID;
-    private int TransactionID;
+    private String Phone;
     private int ProductID;
     private int Quantity;
     private double UnitPrice;
     private float score;
     private double TotalPrice;
+    private String status;
+    private String typePayment;
+    private String DATETIME;
 
-    public DetailTran(int transactionID, int productID, int quantity, double unitPrice, double totalPrice) {
-        TransactionID = transactionID;
+    public DetailTran(String phone, int productID, int quantity, double unitPrice,
+                      float score, double totalPrice, String status, String typePayment, String DATETIME) {
+        Phone = phone;
         ProductID = productID;
         Quantity = quantity;
         UnitPrice = unitPrice;
+        this.score = score;
         TotalPrice = totalPrice;
+        this.status = status;
+        this.typePayment = typePayment;
+        this.DATETIME = DATETIME;
     }
 }

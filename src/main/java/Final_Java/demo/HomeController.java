@@ -168,12 +168,13 @@ public class HomeController {
     public String Add_Product(@RequestParam("addName") String name,
                               @RequestParam("addPrice") String price,
                               @RequestParam("addCategory") String category,
+                              @RequestParam("addDescription") String description,
                               @RequestParam("addImage") MultipartFile image){
 
         LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-        Product product= new Product("", name, Float.parseFloat(price),category, currentDate.format(formatter));
+        Product product= new Product("", name, Float.parseFloat(price),description,category, currentDate.format(formatter));
         try {
             // Ensure the upload directory exists
             File directory = new File(productDir);
@@ -197,6 +198,7 @@ public class HomeController {
     public String EditProduct(@RequestParam("id") String id,
                             @RequestParam("editName") String name,
                             @RequestParam("editPrice") String price,
+                              @RequestParam("editDescription") String description,
                             @RequestParam("editCategory") String category,
                             @RequestParam("editImage") MultipartFile image) {
         Product existingProduct = productRepo.findById(Integer.parseInt(id)).orElse(null);
@@ -205,6 +207,7 @@ public class HomeController {
         }
         if(!name.equals("")){existingProduct.setName(name);}
         if(!price.equals("")){existingProduct.setPrice(Float.parseFloat(price));}
+        if(!description.equals("")){existingProduct.setDescription(description);}
         if(!category.equals("")){existingProduct.setCategory(category);}
         if(!image.isEmpty()){
             try {

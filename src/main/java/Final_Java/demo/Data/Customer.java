@@ -12,23 +12,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Product {
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String image;
     private String name;
-    private float price;
-    private String description;
-    private String category;
-    private String creationDate;
+    private String address;
+    private String phone;
 
-    public Product(String image, String name, float price, String description, String category, String creationDate) {
-        this.image = image;
+    public Customer(String name, String address, String phone) {
         this.name = name;
-        this.price = price;
-        this.description = description;
-        this.category = category;
-        this.creationDate = creationDate;
+        this.address = address;
+        this.phone = phone;
     }
 }
