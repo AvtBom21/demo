@@ -53,7 +53,8 @@ public class LoginController {
                                @RequestParam("expmonth") String expmonth,
                                @RequestParam("expyear") String expyear,
                                @RequestParam("cvv") String cvv,
-                               @RequestParam(name = "sameadr", defaultValue = "false") boolean sameAddress){
+                               @RequestParam(name = "sameadr", defaultValue = "false") boolean sameAddress,
+                               Model model){
 
         Customer customer = new Customer(firstname, address, phone);
         for (DetailTran detail:detailTrans
@@ -70,6 +71,13 @@ public class LoginController {
             detailTranRepo.save(detail);
         }
         customerRepo.save(customer);
+        List<DetailTran> detailTranList = new ArrayList<>();
+        for (DetailTran de:detailTrans
+             ) {
+            detailTranList.add(detailTranRepo.findByMatchingProperties(de));
+        }
+        model.addAttribute("detailTranList", detailTranList);
+        System.out.println(detailTranList);
         return "Checkout";
     }
     @GetMapping("/")
@@ -220,5 +228,12 @@ public class LoginController {
         model.addAttribute("detailTran", detailTran);
         model.addAttribute("product", product);
         return "Historyorder";
+    }
+    @GetMapping("/Cart/Delete")
+    public String deleltedetail(@RequestParam("id") int detailid){
+        DetailTran detailTran = detailTranRepo.findById(detailid).orElse(null);
+        detailTrans.remove(detailTran);
+        detailTranRepo.delete(detailTran);
+        return "redirect:/Cart";
     }
 }

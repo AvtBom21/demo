@@ -121,7 +121,7 @@
             <div class="row">
                 <div class="col-75">
                     <div class="container-checkout">
-                        <form action="" method="post">
+                        <form action="" method="post" th:if="!${detailTranList}">
 
                             <div class="row">
                                 <div class="col-50">
@@ -168,6 +168,11 @@
                             </label>
                             <input type="submit" value="Purchase" class="btn">
                         </form>
+                        <div class="row" th:if="${detailTranList}">
+                            <div class="col-50" th:each="a:${detailTranList}">
+                                <p> click <a th:if="${a != null}" th:href="'/historyorder?id=' + ${a.TransactionDetailID}">here</a> to more information</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-25">
@@ -180,8 +185,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
 
 
