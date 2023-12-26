@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileOutputStream;
 import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,11 @@ public class HomeController {
     private String uploadDir;
     @Value("${product.dir}") // Inject the upload directory path from application.properties
     private String productDir;
+    private SendEmail sendEmail;
+    private LocalDateTime localDateTime;
     @GetMapping("Admin")
     public String AccountManage(Model model){
+        sendEmail = new SendEmail();
         List<Account> list = new ArrayList<>();
         db.findAll().forEach(list::add);
         model.addAttribute("accounts", list);
@@ -47,7 +51,9 @@ public class HomeController {
                               @RequestParam("image") MultipartFile image){
 
         if (image.isEmpty()) {
-            db.save(new Account(email,generateRandomPassword(),"macdinh.jpg",name,phone,address,-1));
+            Account account = new Account(email,generateRandomPassword(),"macdinh.jpg",name,phone,address,-1);
+            db.save(account);
+            localDateTime = sendEmail.SendEmailAccess(account);
             return "redirect:/Admin"; // Redirect to the admin page without saving anything
         }
         Account account= new Account(email,generateRandomPassword(),"",name,phone,address,-1);
@@ -63,11 +69,12 @@ public class HomeController {
             try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
                 fileOutputStream.write(image.getBytes());
             }
-        db.save(account);
+            db.save(account);
             // Redirect with a success message or other information
         } catch (IOException e) {
             e.printStackTrace(); // Handle the exception appropriately
         }
+        localDateTime = sendEmail.SendEmailAccess(account);
         return  "redirect:/Admin";
     }
     @GetMapping("Admin/delete/{id}")
@@ -107,8 +114,22 @@ public class HomeController {
         // Process the selected IDs (e.g., delete from the database)
         for (String id : idArray) {
             int employeeId = Integer.parseInt(id.trim());
-            db.deleteById(employeeId);
+            Account account = db.findById(employeeId).orElse(null);
+            if (account.getAdmin()==-1){
+                localDateTime = sendEmail.SendEmailAccess(account);
+            }
         }
+        return "redirect:/Admin";
+    }
+    @GetMapping("/Admin/getEmail")
+    public String getEmail(@RequestParam("id") int id , Model model) {
+        if (isAccountExpired(localDateTime)) {
+            return "redirect:/";
+        }
+        Account account = db.findById(id).orElse(null);
+        account.setAdmin(2);
+        db.save(account);
+        model.addAttribute(account);
         return "redirect:/Admin";
     }
     @PostMapping("/Admin/edit")
@@ -248,7 +269,10 @@ public class HomeController {
         return  "redirect:/Product";
     }
 
-
+    private boolean isAccountExpired(LocalDateTime time) {
+        LocalDateTime now = LocalDateTime.now();
+        return time.isBefore(now);
+    }
     private String generateRandomPassword() {
         // Define the characters that can be used in the password
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
