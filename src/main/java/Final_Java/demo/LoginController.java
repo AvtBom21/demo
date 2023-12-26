@@ -156,9 +156,8 @@ public class LoginController {
     }
     @GetMapping("/Home")
     public String Home(Model model){
-        if(products.isEmpty()){
-            productRepo.findAll().forEach(products::add);
-        }
+        products.clear();
+        productRepo.findAll().forEach(products::add);
         if(account!=null){
             model.addAttribute("account", account);
         }
