@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="item">
-                        <a href="CheckOut">
+                        <a href="Checkout">
                             <i class="fab fa-apple-pay" style='font-size:20px'></i>
                             Check Out
                         </a>
@@ -147,25 +147,27 @@
     
                     <table>
                         <thead>
-                        <div th:each="detailTran : ${detailTrans}">
-                            <div th:each="product : ${products}" th:if="${product.id eq detailTran.ProductID}">
+
                             <tr>
-                                <td th:text="${product.name}"></td>
-                                <td th:text="${detailTrans.TotalPrice}">Price</td>
-                                <td th:text="${detailTrans.typePayment}">Payment</td>
-                                <td th:text="${detailTrans.status}">Status</td>
+                                <td>Product</td>
+                                <td>Price</td>
+                                <td>Payment</td>
+                                <td>Status</td>
                             </tr>
-                            </div>
-                        </div>
+
                         </thead>
 
                         <tbody>
+                        <div th:each="detailTran : ${detailTranList}">
+                            <div th:each="product : ${products}" th:if="${product.id eq detailTran.ProductID}">
                             <tr>
-                                <td>iPhone 15 pro max</td>
-                                <td>$1499</td>
-                                <td>Paid</td>
-                                <td><span class="Compelete">Compelete</span></td>
+                                <td th:text="${product.name}"></td>
+                                <td th:text="${detailTran.TotalPrice}"></td>
+                                <td th:text="${detailTran.typePayment}"></td>
+                                <td><span class="Compelete"  th:text="${detailTran.status}"></span></td>
                             </tr>
+                            </div>
+                        </div>
                         </tbody>
                     </table>
                 </div>
