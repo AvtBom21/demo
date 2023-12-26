@@ -50,6 +50,13 @@
                         </a>
                     </div>
 
+                    <div class="item" th:if="${account.admin == 2}">
+                        <a href="Information">
+                            <i class="fas fa-house-user"></i>
+                            Information
+                        </a>
+                    </div>
+
                     <div class="item" th:if="${account.admin == 1}">
                         <a class="sub-btn">
                             <i class="fas fa-box-open"></i>

@@ -130,7 +130,7 @@ public class HomeController {
         account.setAdmin(2);
         db.save(account);
         model.addAttribute(account);
-        return "redirect:/Admin";
+        return inforshow(account, model);
     }
     @PostMapping("/Admin/edit")
     public String EditAdmin(@RequestParam("id") String id,
@@ -269,11 +269,52 @@ public class HomeController {
         return  "redirect:/Product";
     }
 
+    public String inforshow(Account account, Model model){
+        model.addAttribute("account", account);
+        return "Information";
+    }
+    @PostMapping("/updateinfor")
+    public String updateinfo(@RequestParam("id") String id,
+                             @RequestParam("fullname") String name,
+                             @RequestParam("email") String email,
+                             @RequestParam("phone") String phone,
+                             @RequestParam("address") String address,
+                             @RequestParam("image") MultipartFile image){
+        Account existingAccount = db.findById(Integer.parseInt(id)).orElse(null);
+        if (existingAccount==null) {
+            return "redirect:/Admin"; // Redirect to the admin page without saving anything
+        }
+        if(!name.equals("")){existingAccount.setName(name);}
+        if(!email.equals("")){existingAccount.setEmail(email);}
+        if(!address.equals("")){existingAccount.setAddress(address);}
+        if(!phone.equals("")){existingAccount.setPhone(phone);}
+        if(!image.isEmpty()){
+            try {
+                // Ensure the upload directory exists
+                File directory = new File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+                existingAccount.setImage(image.getOriginalFilename());
+                // Save the file to the specified directory
+                File outputFile = new File(uploadDir, image.getOriginalFilename());
+                try (FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
+                    fileOutputStream.write(image.getBytes());
+                }
+                // Redirect with a success message or other information
+            } catch (IOException e) {
+                e.printStackTrace(); // Handle the exception appropriately
+            }
+        }
+        db.save(existingAccount);
+        return "redirect:/Information";
+    }
     private boolean isAccountExpired(LocalDateTime time) {
         LocalDateTime now = LocalDateTime.now();
         return time.isBefore(now);
     }
     private String generateRandomPassword() {
+        // Define the characters that can be used in the password
         // Define the characters that can be used in the password
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+";
 

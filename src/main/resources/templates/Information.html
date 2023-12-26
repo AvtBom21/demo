@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
@@ -51,60 +51,24 @@
                     <div class="item">
                         <a href="/">
                             <i class="fas fa-house-user"></i>
+                            Dashboard
+                        </a>
+                    </div>
+                    <div class="item">
+                        <a href="/Home">
+                            <i class="far fa-eye"></i>
                             Home
                         </a>
                     </div>
 
                     <div class="item">
-                        <a href="/recent-order">
-                            <i class="far fa-eye"></i>
-                            Recent Order
-                        </a>
-                    </div>
-
-                    <div class="item">
-                        <a class="sub-btn">
-                            <i class="fas fa-box-open"></i>
-                            Products
-                            <i class="fas fa-angle-right dropdown"></i>
-                        </a>
-
-                        <div class="sub-menu">
-                            <a href="/products" class="sub-item">
-                                <i class="far fa-clipboard"></i>
-                                Manage Production
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="item">
-                        <a class="sub-btn">
-                            <i class="fas fa-user-lock"></i>
-                            Account
-                            <i class="fas fa-angle-right dropdown"></i>
-                        </a>
-
-                        <div class="sub-menu">
-                            <a href="/accounts" class="sub-item">
-                                <i class="far fa-plus-square"></i>
-                                Manage account
-                            </a>
-
-                            <a href="/accounts/list-employees" class="sub-item">
-                                <i class="fas fa-list"></i>
-                                List employees
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="item">
-                        <a href="/carts/check-out">
+                        <a href="/Checkout">
                             <i class="fab fa-apple-pay" style='font-size:20px'></i>
                             Check Out
                         </a>
                     </div>
 
-                    <div class="item"><a href="/accounts/logout"><i class='fas fa-sign-out-alt'></i>Logout</a></div>
+                    <div class="item"><a href="/Dashboard/logout"><i class='fas fa-sign-out-alt'></i>Logout</a></div>
                 </div>
             </div>
 
@@ -120,52 +84,46 @@
                     <div class="table-title">
                         <h2 style="color: red;">Information account</h2>
                         <div>
-                            <button class="btn btn-success" id="openUpdate" data-id="<%= user._id %>"
-                                data-fullname="<%= user.fullname %>" data-email="<%= user.email %>"
-                                data-username="<%= user.username %>" data-phone="<%= user.phone %>"
-                                data-role="<%= user.role %>" data-isActive="<%= user.isActive %>"
-                                data-status="<%= user.status %>"
-                                data-url_avatar="<%= user.url_avatar %>">Update</button>
+                            <button class="btn btn-success" id="openUpdate" th:data-id="${account.id}"
+                                    th:data-fullname="${account.name}"
+                                    th:data-email="${account.email}"
+                                    th:data-phone="${account.phone}">Update</button>
 
-                            <button class="btn btn-success" id="openChangePW" data-id="<%= user._id %>">Change
+                            <button class="btn btn-success" id="openChangePW" th:data-id="${account.id}">Change
                                 password</button>
                         </div>
                     </div>
 
-                    <% if(errorMessage.length > 0) { %>
                         <div id="errorMessageAlert" class="alert fade show" style="color: red; font-size: x-large; text-align: center;">
-                            <%= errorMessage %>
                           <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
-                    <% } %>
 
-                    <% if(successMessage.length > 0) { %>
                         <div id="successMessageAlert" class="alert fade show" style="color: rgb(45, 177, 45); font-size: x-large; text-align: center;">
-                            <%= successMessage %>
                           <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
-                    <% } %>
 
                     <div class="profile-info-container">
-                        <img src="/Image/avatars/<%= user.url_avatar %>" alt="User Avatar">
+                        <img th:src="@{'/images/'+${account.image}}" alt="User Avatar">
                         <div class="profile-info-details">
                             <div>
-                                <strong>Full Name:</strong> <span><%= user.fullname %></span>
+                                <strong>Full Name:</strong> <span th:text="${account.name}"></span>
                               </div>
                               <div>
-                                <strong>Email:</strong> <span><%= user.email %></span>
+                                <strong>Email:</strong> <span th:text="${account.email}"></span>
                               </div>
                               <div>
-                                <strong>Phone:</strong> <span><%= user.phone %></span>
+                                <strong>Phone:</strong> <span th:text="${account.phone}"></span>
                               </div>
                               <div>
-                                <strong>Role:</strong> <span><%= user.role %></span>
                               </div>
                               <div>
-                                <strong>Active:</strong> <span><%= user.isActive %></span>
+                                <strong>Address:</strong> <span th:text="${account.address}"></span>
                               </div>
                               <div>
-                                <strong>Status:</strong> <span><%= user.status %></span>
+                                <strong>Status:</strong> <span th:if="${account.admin==1}"> Admin</span>
+                                  <span th:if="${account.admin==2}"> User</span>
+                                  <span th:if="${account.admin==-1}"> non-activated</span>
+                                  <span th:if="${account.admin==-2}"> Block</span>
                               </div>
                         </div>
                     </div>
@@ -176,26 +134,28 @@
                 <div class="modal" id="editEmployeeModal">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="post" action="/accounts/update-information" enctype="multipart/form-data">
+                            <form method="post" action="/updateinfor" enctype="multipart/form-data">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Edit Employees</h5>
                                     <span class="close" id="editEmployeeCloseBtn">&times;</span>
                                 </div>
                                 <div class="modal-body">
                                     <input id="editId" type="text" name="id" style="display: none;">
-                                    <input id="editUrlAvatar" type="text" name="url_avatar" style="display: none;">
                                     <div class="form-group">
                                         <label for="editFullName" style="color: black;">Full Name</label>
-                                        <input type="text" name="fullname" id="editFullName" class="form-control"
-                                            required>
+                                        <input type="text" name="fullname" id="editFullName" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="editEmail" style="color: black;">Email</label>
-                                        <input type="email" name="email" id="editEmail" class="form-control" required>
+                                        <input type="email" name="email" id="editEmail" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="editPhone" style="color: black;">Phone</label>
-                                        <input type="text" name="phone" id="editPhone" class="form-control" required>
+                                        <input type="text" name="phone" id="editPhone" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editAddress" style="color: black;">Address</label>
+                                        <input type="text" name="address" id="editAddress" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label for="editImage" class="form-label" style="color: black;">Choose Avatar
@@ -219,7 +179,7 @@
                 <div class="modal" id="changePWModal">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <form method="post" action="/accounts/change-password">
+                            <form method="post" action="/change-password">
                                 <div class="modal-header">
                                     <h5 class="modal-title">Change Password</h5>
                                     <span class="close" id="changePWCloseBtn">&times;</span>
@@ -281,13 +241,11 @@
             document.getElementById('openUpdate').addEventListener('click', function (event) {
 
                 const employeeId = event.target.getAttribute('data-id');
-                const employeeUrlAvatar = event.target.getAttribute('data-url_avatar');
                 const employeeFullName = event.target.getAttribute('data-fullname');
                 const employeeEmail = event.target.getAttribute('data-email');
                 const employeePhone = event.target.getAttribute('data-phone');
 
                 document.getElementById('editId').value = employeeId
-                document.getElementById('editUrlAvatar').value = employeeUrlAvatar
                 document.getElementById('editFullName').value = employeeFullName
                 document.getElementById('editEmail').value = employeeEmail
                 document.getElementById('editPhone').value = employeePhone

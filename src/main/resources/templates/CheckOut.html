@@ -34,7 +34,7 @@
 <body>
     <div class="container">
         <!-- =============== Navigation ================ -->
-        <div class="navigation">
+        <div class="navigation" th:if="${account}">
             <div class="menu-btn">
                 <ion-icon name="menu-outline"></ion-icon>
             </div>
@@ -64,7 +64,14 @@
                         </a>
                     </div>
 
-                    <div class="item">
+                    <div class="item" th:if="${account.admin == 2}">
+                        <a href="Information">
+                            <i class="fas fa-house-user"></i>
+                            Information
+                        </a>
+                    </div>
+
+                    <div class="item" th:if="${account.admin==1}">
                         <a class="sub-btn">
                             <i class="fas fa-box-open"></i>
                             Products
@@ -79,14 +86,14 @@
                         </div>
                     </div>
 
-                    <div class="item">
+                    <div class="item" th:if="${account.admin==1}">
                         <a class="sub-btn">
                             <i class="fas fa-user-lock"></i>
                             Account
                             <i class="fas fa-angle-right dropdown"></i>
                         </a>
 
-                        <div class="sub-menu">
+                        <div class="sub-menu" th:if="${account.admin==1}">
                             <a href="Admin" class="sub-item">
                                 <i class="far fa-plus-square"></i>
                                 Manage account

@@ -36,7 +36,7 @@
 
             <div class="menu">
 
-                <div class="item">
+                <div class="item" th:if="${account}">
                     <a href="Dashboard">
                         <i class="far fa-eye"></i>
                         Dashboard
@@ -49,8 +49,14 @@
                         Home
                     </a>
                 </div>
+                <div class="item" th:if="${account}">
+                    <a href="Information">
+                        <i class="fas fa-house-user"></i>
+                        Information
+                    </a>
+                </div>
 
-                <div class="item">
+                <div class="item" th:if="${account}">
                     <a class="sub-btn">
                         <i class="fas fa-box-open"></i>
                         Products
@@ -65,7 +71,7 @@
                     </div>
                 </div>
 
-                <div class="item">
+                <div class="item" th:if="${account}">
                     <a class="sub-btn">
                         <i class="fas fa-user-lock"></i>
                         Account

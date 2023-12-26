@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.swing.plaf.PanelUI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class LoginController {
         }
         model.addAttribute("count",count);
         model.addAttribute("Total",Total);
+        model.addAttribute("account",account);
         return "Checkout";
     }
     @PostMapping("/Checkout")
@@ -169,6 +171,27 @@ public class LoginController {
         account =null;
         return Dashboard(model);
     }
+    public String inforShow(Model model, Account account1){
+        if(account1!=null){
+            account=db.findById(account1.getId()).orElse(null);
+            return "redirect:/Dashboard";
+        }
+        if(account==null){
+            return "redirect:/";
+        }
+        account = db.findById(account.getId()).orElse(null);
+        model.addAttribute("account",account);
+        return "Information";
+    }
+    @GetMapping("Information")
+    public String inforShow1(Model model, Account account1){
+        if(account==null){
+            return "redirect:/";
+        }
+        account = db.findById(account.getId()).orElse(null);
+        model.addAttribute("account",account);
+        return "Information";
+    }
     @GetMapping("/buy")
     public String Buy(@RequestParam("id") int productId, Model model){
         LocalDate currentDate = LocalDate.now();
@@ -234,5 +257,16 @@ public class LoginController {
         detailTrans.remove(detailTran);
         detailTranRepo.delete(detailTran);
         return "redirect:/Cart";
+    }
+    @PostMapping("change-password")
+    public String changepass(@RequestParam("id") String id,
+                             @RequestParam("password") String pass,
+                             Model model){
+        Account existingAccount = db.findById(Integer.parseInt(id)).orElse(null);
+        if(existingAccount!=null){
+            existingAccount.setPass(pass);
+        }
+        db.save(existingAccount);
+        return inforShow(model,existingAccount);
     }
 }
